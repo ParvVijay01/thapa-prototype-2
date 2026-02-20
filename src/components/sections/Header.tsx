@@ -1,14 +1,21 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 
 interface HeaderProps {
     variant?: 'A' | 'B' | 'C';
 }
 
 export default function Header({ variant = 'A' }: HeaderProps) {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
     return (
-        <header className="w-full bg-white z-50">
+        <header className="w-full bg-white z-50 relative">
             <div className="max-w-[1440px] mx-auto px-6 h-20 flex items-center justify-between">
 
                 {/* Logo Area */}
@@ -83,9 +90,47 @@ export default function Header({ variant = 'A' }: HeaderProps) {
                             />
                         </div>
                     )}
+
+                    {/* Mobile Menu Toggle Button */}
+                    <button
+                        className="md:hidden text-text-primary p-2 -mr-2 flex items-center justify-center cursor-pointer"
+                        onClick={toggleMobileMenu}
+                        aria-label="Toggle mobile menu"
+                    >
+                        {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                    </button>
                 </div>
 
             </div>
+
+            {/* Mobile Navigation Menu */}
+            {isMobileMenuOpen && (
+                <div className="md:hidden absolute top-20 left-0 w-full bg-white border-t border-gray-100 shadow-xl py-6 px-6 flex flex-col gap-6 z-50">
+                    <nav className="flex flex-col gap-4 font-bold text-lg text-text-primary">
+                        {variant === 'A' && (
+                            <>
+                                <Link href="/" onClick={toggleMobileMenu} className="hover:text-primary transition-colors">Home</Link>
+                                <Link href="/menu" onClick={toggleMobileMenu} className="hover:text-primary transition-colors">Menu</Link>
+                                <Link href="/location" onClick={toggleMobileMenu} className="hover:text-primary transition-colors">Location</Link>
+                            </>
+                        )}
+                        {variant === 'B' && (
+                            <>
+                                <Link href="/" onClick={toggleMobileMenu} className="hover:text-primary transition-colors">Home</Link>
+                                <Link href="/menu" onClick={toggleMobileMenu} className="text-primary transition-colors">Menu</Link>
+                                <Link href="/location" onClick={toggleMobileMenu} className="hover:text-primary transition-colors">Locations</Link>
+                            </>
+                        )}
+                        {variant === 'C' && (
+                            <>
+                                <Link href="/" onClick={toggleMobileMenu} className="hover:text-primary transition-colors">Home</Link>
+                                <Link href="/menu" onClick={toggleMobileMenu} className="hover:text-primary transition-colors">Menu</Link>
+                                <Link href="/location" onClick={toggleMobileMenu} className="text-primary transition-colors">Location</Link>
+                            </>
+                        )}
+                    </nav>
+                </div>
+            )}
         </header>
     );
 }
